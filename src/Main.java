@@ -1,4 +1,4 @@
-//homework#1 by Yumatov Maksim
+//homework#1 JavaCore by Yumatov Maksim
 
 public class Main {
 
