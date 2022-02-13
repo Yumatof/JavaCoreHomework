@@ -28,28 +28,52 @@ public class Course {
         }
     }
 
-    private ObstacleBuilder[] obstacleCourse;
+    public ObstacleBuilder[] obstacleCourse;
+    private int countMemberTeamWin=0;
 
     Course(){
-        obstacleCourse=createObstacleCourse();
+                obstacleCourse=createObstacleCourse();
     }
+
 
     private ObstacleBuilder[] createObstacleCourse(){
         ObstacleBuilder[] obstacleCourse = {new ObstacleBuilder("run","Бег на дистанцию 100 метров", 10.64f,14.4f),
-        new ObstacleBuilder("jumpLong", "Прыжки в длинну",4, 7.1f),
+        new ObstacleBuilder("jumpLong", "Прыжки в длинну",4.1f, 7.1f),
         new ObstacleBuilder("jumpHeight","Прыжки в высоту", 1.3f, 2.1f)};
         return obstacleCourse;
     }
 
     public void passingCourse(TeamBuilder team){
-        for (int i=0; i<obstacleCourse.length; i++){
+        for (Course.ObstacleBuilder c:obstacleCourse){
             for(TeamBuilder.TeamMember t:team.lineUp){
-            //for (int j=0;j<team.lineUp.length; j++){
-                System.out.println(t.getMemberName());
+                switch(c.titleObstacle){
+                    case "run":
+                        t.setResultRun(
+                                checkResultRun(t.getRunTime100m(), c.minNormativeResult, c.maxNormativeResult));
+                        break;
+                    case "jumpLong":
+                        t.setResultLongJump(
+                                checkResultJump(t.getLongJump(), c.minNormativeResult, c.maxNormativeResult));
+                        break;
+                    case "jumpHeight":
+                        t.setResultHighJump(
+                                checkResultJump(t.getHighJump(), c.minNormativeResult, c.maxNormativeResult));
+                        break;
+                }
 
 
             }
         }
+    }
+
+    private boolean checkResultRun(float personResult, float minResult, float maxResult){
+
+        return personResult < minResult || personResult < maxResult;
+    }
+    private boolean checkResultJump(float personResult, float minResult, float maxResult){
+
+        return personResult > minResult || personResult > maxResult;
+
     }
 
 }
