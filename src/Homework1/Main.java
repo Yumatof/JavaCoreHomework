@@ -1,4 +1,4 @@
-//homework#1 JavaCore by Yumatov Maksim
+package Homework1;//homework#1 JavaCore by Yumatov Maksim
 
 public class Main {
 
