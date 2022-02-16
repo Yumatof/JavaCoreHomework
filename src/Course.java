@@ -1,5 +1,3 @@
-package Homework1;
-
 public class Course {
 
     class ObstacleBuilder {
