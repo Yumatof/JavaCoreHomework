@@ -1,3 +1,5 @@
+//Homework by Yumatov Maksim
+
 package Homework2;
 
 import Homework2.MyException.MyArrayDataException;
