@@ -4,8 +4,10 @@ package Homework3;
 
 import Homework3.Fruit.Apple;
 import Homework3.Fruit.Orange;
+import Homework3.MyGeneric.FruitBox;
 import Homework3.MyGeneric.VarToChange;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -28,15 +30,15 @@ public class Main {
 
         strArray.elementChangePosition();
         strArray.printToConsole();
+
         System.out.println("===========");
 
 
         //case#2
 
-//        Apple apple1 = new Apple();
-//        System.out.println(apple1.getWeight());
-//        Orange orange1 = new Orange();
-//        System.out.println(orange1.getWeight());
+        FruitBox<Apple> aplleBox1 = new FruitBox<>(new Apple(), new Apple());
+        System.out.println(aplleBox1.getWeightBox());
+
 
 
     }

@@ -2,11 +2,29 @@ package Homework3.MyGeneric;
 
 import Homework3.Fruit.Fruit;
 
-public class FruitBox<B> extends Fruit{
+import java.util.ArrayList;
+import java.util.Arrays;
 
-    private B[] box;
+public class FruitBox<B extends Fruit> {
 
-    public FruitBox(B... box){
-        this.box = box;
+    private ArrayList<B> boxList=new ArrayList<>();
+    //private B[] box;
+
+    public FruitBox(B...inputboxList){
+        boxList.addAll(Arrays.asList(inputboxList));
+    }
+
+
+    public float getWeightBox(){
+
+        return boxList.size()*boxList.get(0).getWeight();
+    }
+
+//    public boolean compare(FruitBox<?> anotherBox){
+//        return getWeightBox() = anotherBox.getWeightBox();
+//    }
+
+    public void putInThisBox(FruitBox<B> anotherBox){
+
     }
 }
