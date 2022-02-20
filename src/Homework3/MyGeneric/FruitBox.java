@@ -20,9 +20,9 @@ public class FruitBox<B extends Fruit> {
         return boxList.size()*boxList.get(0).getWeight();
     }
 
-//    public boolean compare(FruitBox<?> anotherBox){
-//        return getWeightBox() = anotherBox.getWeightBox();
-//    }
+    public boolean compare(FruitBox<?> anotherBox){
+       return getWeightBox() == anotherBox.getWeightBox();
+    }
 
     public void putInThisBox(FruitBox<B> anotherBox){
 

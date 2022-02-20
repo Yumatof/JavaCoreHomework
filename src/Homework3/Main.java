@@ -37,10 +37,12 @@ public class Main {
         //case#2
 
         FruitBox<Apple> aplleBox1 = new FruitBox<>(new Apple(), new Apple());
+        FruitBox<Apple> aplleBox2 = new FruitBox<>(new Apple(), new Apple(), new Apple());
+
+        FruitBox<Orange> orangeBox1 = new FruitBox<>(new Orange(), new Orange(),new Orange(),new Orange());
         System.out.println(aplleBox1.getWeightBox());
-
-
-
+        System.out.println(orangeBox1.getWeightBox());
+        System.out.println(aplleBox1.compare(orangeBox1));;
     }
 
 
