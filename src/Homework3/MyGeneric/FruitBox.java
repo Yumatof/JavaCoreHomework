@@ -4,27 +4,44 @@ import Homework3.Fruit.Fruit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
-public class FruitBox<B extends Fruit> {
 
-    private ArrayList<B> boxList=new ArrayList<>();
+public class FruitBox<B extends Fruit>{
+
+    private ArrayList<B> box=new ArrayList<>(100);
     //private B[] box;
 
-    public FruitBox(B...inputboxList){
-        boxList.addAll(Arrays.asList(inputboxList));
+    public FruitBox(B...inputBox){
+        box.addAll(Arrays.asList(inputBox));
     }
 
 
     public float getWeightBox(){
+        if(box.size()==0) return 0;
+        return box.size()*box.get(0).getWeight();
+    }
+    public void putInBox(B obj){
+        box.add(obj);
+    }
 
-        return boxList.size()*boxList.get(0).getWeight();
+    public ArrayList<B> getBox() {
+        return box;
+    }
+
+    public void clearBox(){
+        box.clear();
     }
 
     public boolean compare(FruitBox<?> anotherBox){
        return getWeightBox() == anotherBox.getWeightBox();
     }
 
-    public void putInThisBox(FruitBox<B> anotherBox){
+    public void shiftInThisBox(FruitBox<B> anotherBox){
+
+        box.addAll(anotherBox.getBox());
+        anotherBox.clearBox();
 
     }
+
 }
