@@ -14,9 +14,15 @@ public class Main {
 
         System.out.println(findDuplicateInArray(duplicateStr).toString());
 
-
 //case#2
+        System.out.println("++++++++++");
 
+        TelephoneHandbook handbook1 = new TelephoneHandbook();
+
+        handbook1.testFilling();
+        handbook1.addInHandbook("2232222","Котейский");
+
+        System.out.println(handbook1.getNumber("Иванов"));
 
     }
 
