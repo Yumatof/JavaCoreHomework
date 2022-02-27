@@ -2,7 +2,11 @@ package Homework3.Fruit;
 
 public class Fruit {
 
-    protected float weight;
+    private float weight;
+
+    public Fruit( float weight){
+        this.weight=weight;
+    }
 
     public float getWeight() {
         return weight;

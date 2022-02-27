@@ -51,8 +51,7 @@ public class Main {
         for(int i = 0; i < array.length; i++){
             for(int j = 0; j < array[i].length; j++){
                 try{
-                    int y = Integer.parseInt(array[i][j]);
-                    sum += y;
+                    sum += Integer.parseInt(array[i][j]);
                 }
                 catch (NumberFormatException nfe){
                     throw new MyArrayDataException(nfe.getMessage() + " ошибка в яйчейке массива с координатами " + "["+i+"]"+"["+j+"]");

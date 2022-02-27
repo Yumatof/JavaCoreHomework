@@ -29,7 +29,7 @@ public class FruitBox<B extends Fruit>{
         return box;
     }
 
-    public void clearBox(){
+    private void clearBox(){
         box.clear();
     }
 
