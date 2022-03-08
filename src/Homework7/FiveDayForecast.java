@@ -11,10 +11,13 @@ public class FiveDayForecast {
     private String lat;
     private String API_LINK;
     private String API_KEY;
+    private String cityName;
+
     private OkHttpClient client = new OkHttpClient();
     private ObjectMapper objectMapper= new ObjectMapper();
 
-    public FiveDayForecast(String lon, String lat, String API_LINK, String API_KEY) {
+    public FiveDayForecast(String cityName, String lon, String lat, String API_LINK, String API_KEY) {
+        this.cityName=cityName;
         this.lon=lon;
         this.lat=lat;
         this.API_LINK = API_LINK;

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 
@@ -32,8 +33,18 @@ public class GeoCoding {
                 .url(jsonCityCoordinates)
                 .build();
 
-        responseCityCoordinates = deleteSymbol
-                (client.newCall(requestCityCoordinates).execute().body().string());
+        Response jsonResponse = client.newCall(requestCityCoordinates).execute();
+        if (!jsonResponse.isSuccessful()) {
+            throw new IOException("Невозможно прочесть информацию о городе. " +
+                    "Код ответа сервера = " + jsonResponse.code() + " тело ответа = " + jsonResponse.body().string());
+        }
+        responseCityCoordinates = deleteSymbol(jsonResponse.body().string());
+        System.out.println("Произвожу поиск города " + cityName);
+
+        if (objectMapper.readTree(responseCityCoordinates).size() == 0) {
+            throw new IOException("Server returns 0 cities");
+        }
+
     }
 
     private String deleteSymbol(String tmpStr1) {

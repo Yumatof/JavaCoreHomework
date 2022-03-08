@@ -10,12 +10,14 @@ public class Builder {
     private Scanner scanner = new Scanner(System.in);
     private String lon;
     private String lat;
+    private String cityName;
 
 
     public void runApplication() throws IOException {
         while(true){
             System.out.print("Введите название города \n в котором Вам нужно узнать погоду > ");
-            getCoordinates(scanner.nextLine());
+            cityName = scanner.nextLine();
+            getCoordinates(cityName);
 
             System.out.print("\nВыберите тип прогноза:\n " +
                     " - введите 1 если Вам нужен прогноз на сегодня;\n" +
@@ -32,10 +34,10 @@ public class Builder {
 
             switch (result){
                 case "1":
-                    CurrentForecast currentForecast = new CurrentForecast(lon,lat, API_LINK, API_KEY);
+                    CurrentForecast currentForecast = new CurrentForecast(cityName, lon,lat, API_LINK, API_KEY);
                     break;
                 case "2":
-                    FiveDayForecast fiveDayForecast = new FiveDayForecast(lon,lat, API_LINK, API_KEY);
+                    FiveDayForecast fiveDayForecast = new FiveDayForecast(cityName, lon,lat, API_LINK, API_KEY);
                     break;
             }
         }
