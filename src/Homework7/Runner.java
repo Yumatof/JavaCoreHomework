@@ -1,6 +1,7 @@
 package Homework7;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
@@ -9,9 +10,8 @@ import java.io.*;
 
 
 public class Runner {
-    private static final String API_KEY = "9289b9e923af5bfff57ca20ab5e6a133";
-    private static final String API_LINK = "http://api.openweathermap.org";
-    private static final String FILE_PATH = "src/Homework7/tmp.txt";
+
+
 
     public static void main(String[] args) throws IOException {
 
@@ -32,58 +32,62 @@ public class Runner {
          */
 
 
-        String jsonCityCoordinates = API_LINK + "/geo/1.0/direct?q=петербург&limit=5&appid=" + API_KEY;
-
-        Request requestCityCoordinates = new Request.Builder()
-                .url(jsonCityCoordinates)
-                .build();
-
-        String responseCityCoordinates = deleteSymbol(client.newCall(requestCityCoordinates).execute().body().string());
 
 
 
-        StringReader readerCityCoordinates = new StringReader(responseCityCoordinates);
-        CityCoordinates cityCoordinates = objectMapper.readValue(readerCityCoordinates, CityCoordinates.class);
-        System.out.println(cityCoordinates.getLon());
+
+        //StringReader readerCityCoordinates = new StringReader(responseCityCoordinates);
 
 
-    }
-    private static String deleteSymbol(String tmpStr1){
 
-        String tmpStr2 =  tmpStr1.replace("[","");
-        return  tmpStr2.replace("]","");
+        GeoCoding geoCoding = new GeoCoding("петербург");
+        System.out.println(GeoCoding.getLon());
     }
 
 
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class CityCoordinates {
-        private String lat;
-        private String lon;
-        private String name;
+    public static class GeoCoding{
+        OkHttpClient client = new OkHttpClient();
+        private static ObjectMapper objectMapper= new ObjectMapper();
 
-        public String getName() {
-            return name;
+        private static final String API_KEY = "9289b9e923af5bfff57ca20ab5e6a133";
+        private static final String API_LINK = "http://api.openweathermap.org";
+
+        private static String cityName;
+        private static String responseCityCoordinates;
+        private static String lon;
+        private static String lot;
+
+        public GeoCoding(String cityName) throws IOException {
+            this.cityName = cityName;
+
+            getCoordinates(cityName);
         }
-        public String getLat() {
-            return lat;
-        }
-        public String getLon() {
-            return lon;
+        private void getCoordinates(String cityName) throws IOException {
+            String jsonCityCoordinates = API_LINK + "/geo/1.0/direct?q=" + cityName + "&limit=1&appid=" + API_KEY;
+
+            Request requestCityCoordinates = new Request.Builder()
+                    .url(jsonCityCoordinates)
+                    .build();
+
+           responseCityCoordinates = deleteSymbol
+                    (client.newCall(requestCityCoordinates).execute().body().string());
+
         }
 
-        public void setName(String name) {
-            this.name = name;
+        private static String deleteSymbol(String tmpStr1) {
+            String tmpStr2 = tmpStr1.replace("[", "");
+            return tmpStr2.replace("]", "");
         }
 
-        public void setLat(String lat) {
-            this.lat = lat;
-        }
+        public static String getLon() throws JsonProcessingException {
+            JsonNode lon = objectMapper
+                    .readTree(responseCityCoordinates)
+                    .at("/lon");
 
-        public void setLon(String lon) {
-            this.lon = lon;
+            return lon.asText();
         }
     }
 
-    }
+}
 
