@@ -13,13 +13,14 @@ public class Builder {
     private String cityName;
 
 
+
     public void runApplication() throws IOException {
-        while(true){
-            System.out.print("Введите название города \n в котором Вам нужно узнать погоду > ");
+        while(true) {
+            System.out.print("Введите название города в котором Вам нужно узнать погоду > ");
             cityName = scanner.nextLine();
             getCoordinates(cityName);
 
-            System.out.print("\nВыберите тип прогноза:\n " +
+            System.out.print("\nВыберите тип прогноза:\n" +
                     " - введите 1 если Вам нужен прогноз на сегодня;\n" +
                     " - введите 2 если Вам нужен прогноз на ближайшие 5 дней;\n" +
                     " - введите 0 для выхода из приложения\n > ");
@@ -28,19 +29,21 @@ public class Builder {
 
             try {
                 validateInputValue(result);
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            switch (result){
+            switch (result) {
                 case "1":
-                    CurrentForecast currentForecast = new CurrentForecast(cityName, lon,lat, API_LINK, API_KEY);
+                    CurrentForecast currentForecast = new CurrentForecast(cityName, lon, lat, API_LINK, API_KEY);
+                    currentForecast.getForecast();
                     break;
                 case "2":
-                    FiveDayForecast fiveDayForecast = new FiveDayForecast(cityName, lon,lat, API_LINK, API_KEY);
+                    FiveDayForecast fiveDayForecast = new FiveDayForecast(cityName, lon, lat, API_LINK, API_KEY);
                     break;
             }
         }
+
+
 
     }
     public void getCoordinates(String CityName) throws IOException {
@@ -65,10 +68,5 @@ public class Builder {
         } catch (NumberFormatException e){
             throw new IOException("The entered value is not a number");
         }
-
     }
-
-
-
-
 }

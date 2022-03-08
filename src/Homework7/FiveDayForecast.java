@@ -33,10 +33,10 @@ public class FiveDayForecast {
 
     /*
         //запрос прогноза на 5 дней
-        String jsonForecastWeather5d = EnumsApi.API_LINK.getValue()
-        + "/data/2.5/forecast?lat=" + geoCoding.getLat
-        + "&lon=" + geoCoding.getLon()
-        + EnumsApi.API_KEY.getValue();
+        String jsonForecastWeather5d = API_LINK
+        + "/data/2.5/forecast?lat=" + lat
+        + "&lon=" + lon + "&units=metric&lang=ru"
+        + API_KEY;
 
         Request requestForecast5d = new Request.Builder()
                 .url(jsonForecastWeather5d)

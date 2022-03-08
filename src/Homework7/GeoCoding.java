@@ -39,7 +39,7 @@ public class GeoCoding {
                     "Код ответа сервера = " + jsonResponse.code() + " тело ответа = " + jsonResponse.body().string());
         }
         responseCityCoordinates = deleteSymbol(jsonResponse.body().string());
-        System.out.println("Произвожу поиск города " + cityName);
+        System.out.println("\nПроизвожу поиск города " + cityName);
 
         if (objectMapper.readTree(responseCityCoordinates).size() == 0) {
             throw new IOException("Server returns 0 cities");
