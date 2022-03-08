@@ -1,6 +1,6 @@
 package Homework7;
 
-import Homework7.Enums.EnumsApi;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,15 +13,20 @@ public class GeoCoding {
     private OkHttpClient client = new OkHttpClient();
     private ObjectMapper objectMapper= new ObjectMapper();
 
+    private String API_LINK;
+    private String API_KEY;
+
     private String responseCityCoordinates;
     private String lon;
     private String lot;
 
-    public GeoCoding(String cityName) throws IOException {
+    public GeoCoding(String cityName, String API_LINK, String API_KEY) throws IOException {
+        this.API_LINK=API_LINK;
+        this.API_KEY=API_KEY;
         getCoordinates(cityName);
     }
     private void getCoordinates(String cityName) throws IOException {
-        String jsonCityCoordinates = EnumsApi.API_LINK.getValue() + "/geo/1.0/direct?q=" + cityName + "&limit=1" + EnumsApi.API_KEY.getValue();
+        String jsonCityCoordinates = API_LINK + "/geo/1.0/direct?q=" + cityName + "&limit=1" + API_KEY;
 
         Request requestCityCoordinates = new Request.Builder()
                 .url(jsonCityCoordinates)
