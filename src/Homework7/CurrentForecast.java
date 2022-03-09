@@ -42,7 +42,7 @@ public class CurrentForecast {
 
     private void printForecast() throws JsonProcessingException {
         System.out.println("В городе " + cityName + " на данный момент времени " + getDescription() + "\n"
-                +" - скорость ветра: " + getWindSpeed() +" м/с;\n"
+                +" - ветер " +getWindDirection()+ ", скорость ветра: " + getWindSpeed() +" м/с, порывы до " + getGust() + " м/с\n"
                 +" - температура воздуха: " + getTemperature() + " Cº");
     }
 
@@ -70,4 +70,36 @@ public class CurrentForecast {
                 .at("/main/temp");
         return temperature.asText();
     }
+    private String getGust() throws JsonProcessingException{
+        JsonNode gust = objectMapper
+                .readTree(responseForecastCurrent)
+                .at("/wind/gust");
+        return gust.asText();
+    }
+    private String getWindDirection() throws JsonProcessingException{
+        JsonNode windDirectionStr = objectMapper
+                .readTree(responseForecastCurrent)
+                .at("/wind/deg");
+        int windDirectionInt = Integer.parseInt(windDirectionStr.asText());
+
+        if((windDirectionInt > -1 && windDirectionInt < 23)||(windDirectionInt > 336 && windDirectionInt < 361)){
+            return "северный";
+        } else if(windDirectionInt > 22 && windDirectionInt < 68){
+            return "северо-восточный";
+        } else if(windDirectionInt > 67 && windDirectionInt < 112){
+            return "восточный";
+        } else if(windDirectionInt > 111 && windDirectionInt < 158) {
+            return "юго-восточный";
+        }else if(windDirectionInt > 157 && windDirectionInt < 203) {
+            return "южный";
+        }else if(windDirectionInt > 202 && windDirectionInt < 248) {
+            return "юго-западный";
+        }else if(windDirectionInt > 247 && windDirectionInt < 293) {
+            return "западный";
+        }else if(windDirectionInt > 292 && windDirectionInt < 337) {
+            return "северо-западный";}
+        return null;
+    }
+
+
 }
