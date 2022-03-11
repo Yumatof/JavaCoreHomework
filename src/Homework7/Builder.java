@@ -5,59 +5,30 @@ import java.util.Scanner;
 
 public class Builder {
 
-    private final String API_LINK = "http://api.openweathermap.org";
-    private final String API_KEY = "&appid=9289b9e923af5bfff57ca20ab5e6a133";
     private Scanner scanner = new Scanner(System.in);
-    private String lon;
-    private String lat;
+    private OpenWeatherMapProvider openWeatherMapProvider = new OpenWeatherMapProvider();
     private String cityName;
 
-
-
     public void runApplication() throws IOException {
-        while(true) {
+        while(true){
             System.out.print("Введите название города в котором Вам нужно узнать погоду > ");
             cityName = scanner.nextLine();
-            getCoordinates(cityName);
 
-            System.out.print("\nВыберите тип прогноза:\n" +
+            System.out.print("\nВыберите тип прогноза:\n " +
                     " - введите 1 если Вам нужен прогноз на сегодня;\n" +
                     " - введите 2 если Вам нужен прогноз на ближайшие 5 дней;\n" +
                     " - введите 0 для выхода из приложения\n > ");
             String result = scanner.nextLine();
-            checkInputToExit(result);
 
             try {
                 validateInputValue(result);
-            } catch (IOException e) {
+            }catch (IOException e){
                 e.printStackTrace();
             }
-            switch (result) {
-                case "1":
-                    CurrentForecast currentForecast = new CurrentForecast(cityName, lon, lat, API_LINK, API_KEY);
-                    currentForecast.getForecast();
-                    break;
-                case "2":
-                    FiveDayForecast fiveDayForecast = new FiveDayForecast(cityName, lon, lat, API_LINK, API_KEY);
-                    break;
+            initiator(result);
             }
-        }
-
-
-
-    }
-    public void getCoordinates(String CityName) throws IOException {
-        GeoCoding geoCoding = new GeoCoding(CityName, API_LINK, API_KEY);
-        lon = geoCoding.getLon();
-        lat = geoCoding.getLat();
     }
 
-    public void checkInputToExit(String result){
-        if(result.equals("0")){
-            System.out.println("Завершение работы приложения");
-            System.exit(0);
-        }
-    }
     public void validateInputValue (String inputStr) throws IOException {
         if(inputStr.length() !=1 || inputStr == null){
             throw new IOException("The entered value does not match the conditions " +
@@ -65,8 +36,28 @@ public class Builder {
         }
         try{
             int answer = Integer.parseInt(inputStr);
-        } catch (NumberFormatException e){
+            } catch (NumberFormatException e){
             throw new IOException("The entered value is not a number");
+            }
+        }
+    private void initiator(String result) throws IOException {
+        switch (result){
+            case "1":
+                OpenWeatherMapProvider.currentForecast(cityName);
+                break;
+            case "2":
+                OpenWeatherMapProvider.FiveDayForecast(cityName);
+                break;
+            case "0":
+                System.out.println("Завершение работы приложения");
+                System.exit(0);
+                break;
+            default:
+                throw new IOException("There is no command for command-key " + result);
         }
     }
+
+
+
+
 }
