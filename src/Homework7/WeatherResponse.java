@@ -1,15 +1,12 @@
 package Homework7;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.ArrayList;
-
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherResponse {
 
-        ArrayList <Day> list = new ArrayList <> ();
+    private ArrayList <Day> list = new ArrayList <> ();
 
         public ArrayList<Day> getList() {
             return list;
@@ -17,8 +14,8 @@ public class WeatherResponse {
         public void setList(ArrayList<Day> list) {
             this.list = list;
         }
-
-         class Day {
+        @JsonIgnoreProperties(ignoreUnknown = true)
+         static class Day {
             private Main MainObject;
             private ArrayList< Weather > weather = new ArrayList < Weather > ();
             private Wind WindObject;
@@ -51,8 +48,8 @@ public class WeatherResponse {
              public void setWeather(ArrayList<Weather> weather) {
                  this.weather = weather;
              }
-
-             class Wind {
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            static class Wind {
                 private float speed;
                 private float deg;
                 private float gust;
@@ -78,7 +75,8 @@ public class WeatherResponse {
                     this.gust = gust;
                 }
             }
-             class Main {
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            static class Main {
                 private float temp;
 
                 // Getter Methods
@@ -90,7 +88,8 @@ public class WeatherResponse {
                     this.temp = temp;
                 }
              }
-             class Weather{
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            static class Weather{
                  private String description;
 
                  // Getter Methods
