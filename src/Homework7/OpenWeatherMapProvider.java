@@ -7,11 +7,10 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+
 
 public class OpenWeatherMapProvider {
     private final static String BASE_HOST= "api.openweathermap.org";
@@ -51,7 +50,6 @@ public class OpenWeatherMapProvider {
         String responseCurrentForecast = client.newCall(requestCurrentForecastCurrent).execute().body().string();
         printCurrentForecast(responseCurrentForecast, cityName);
     }
-
     public static void FiveDayForecast(String cityName) throws IOException{
         HashMap hm = takeCoordinates(cityName);
         String lon = (String) hm.get(1);
@@ -77,7 +75,6 @@ public class OpenWeatherMapProvider {
         String response = client.newCall(request).execute().body().string();
         printForecastFiveDay(response, cityName);
     }
-
     private static HashMap takeCoordinates(String cityName) throws IOException {
         HashMap hm = new HashMap<>();
 
@@ -159,7 +156,6 @@ public class OpenWeatherMapProvider {
                 +" - температура воздуха: " + temperature + " Cº.");
     }
     private static String windDirection(Float windDirectionFloat) {
-
         if((windDirectionFloat > -1 && windDirectionFloat < 23)||(windDirectionFloat > 336 && windDirectionFloat < 361)){
             return "северный";
         } else if(windDirectionFloat > 22 && windDirectionFloat < 68){
@@ -178,16 +174,12 @@ public class OpenWeatherMapProvider {
             return "северо-западный";}
         return null;
     }
-
     private static void printForecastFiveDay(String response, String cityName) throws JsonProcessingException {
         System.out.println("Производится поиск погоды в городе " + cityName);
-
         WeatherResponse weatherResponse = mapper.readValue(response, WeatherResponse.class);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+
         ArrayList<WeatherResponse.Day> listForecast = weatherResponse.getList();
-
         for (WeatherResponse.Day element : listForecast) {
-
             ArrayList<WeatherResponse.Day.Weather> weatherDiscription = element.getWeather();
                     System.out.println("****************");
                     System.out.println("Дата: " + element.getDt_txt() + "\n "

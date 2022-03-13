@@ -1,7 +1,5 @@
 package Homework7;
 
-
-
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -17,7 +15,7 @@ public class UserInterface {
 
             System.out.print("\nВыберите тип прогноза:\n " +
                     " - введите 1 если Вам нужен прогноз на сегодня;\n" +
-                    " - введите 2 если Вам нужен прогноз на ближайшие 5 дней(прогноз будет выводиться с разбивкой на 3 часовой интревал);\n" +
+                    " - введите 2 если Вам нужен прогноз на ближайшие 5 дней(прогноз будет выводиться с разбивкой на 3-х часовые интревалы);\n" +
                     " - введите 0 для выхода из приложения\n > ");
             String result = scanner.nextLine();
 
@@ -27,7 +25,7 @@ public class UserInterface {
                 e.printStackTrace();
             }
             controller.UserInput(cityName, result);
-            }
+        }
     }
 
     public void validateInputValue (String inputStr) throws IOException {
@@ -39,8 +37,7 @@ public class UserInterface {
             int answer = Integer.parseInt(inputStr);
             } catch (NumberFormatException e){
             throw new IOException("The entered value is not a number");
-            }
         }
-
     }
+}
 
