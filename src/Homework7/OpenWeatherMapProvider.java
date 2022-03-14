@@ -25,11 +25,25 @@ public class OpenWeatherMapProvider {
 
     private static OkHttpClient client = new OkHttpClient();
     private static ObjectMapper mapper = new ObjectMapper();
+    private static StringBuilder stringBuilder = new StringBuilder();
+
+    private final static String IN_CITY = "В городе ";
+    private final static String DATA_LINE_BEGIN = "Дата: ";
+    private final static String IN_NOW_TIME = " на данный момент времени ";
+    private final static String LINE_BEGIN = " - ";
+    private final static String LINE_END_AND_BREAK = ";\n";
+    private final static String WINTER_LINE_BEGIN = " - ветер ";
+    private final static String WIND_SPEED = ", скорость ветра: ";
+    private final static String UNIT_METR_PER_SECOND = " м/с";
+    private final static String GUST = ", порывы до ";
+    private final static String TEMPERATURE_LINE_BEGIN =" - температура воздуха: ";
+    private final static String UNIT_CELSIUS = " Cº";
+    private final static String END_POINT_AND_BREAK = ".\n";
 
     public static void currentForecast(String cityName) throws IOException {
         HashMap hm = takeCoordinates(cityName);
-        String lon = (String) hm.get(1);
-        String lat = (String) hm.get(2);
+        String lon = (String) hm.get("lon");
+        String lat = (String) hm.get("lat");
 
         HttpUrl takeCurrentForecast =  new HttpUrl.Builder()
                 .scheme("http")
@@ -52,8 +66,8 @@ public class OpenWeatherMapProvider {
     }
     public static void FiveDayForecast(String cityName) throws IOException{
         HashMap hm = takeCoordinates(cityName);
-        String lon = (String) hm.get(1);
-        String lat = (String) hm.get(2);
+        String lon = (String) hm.get("lon");
+        String lat = (String) hm.get("lat");
 
 
         HttpUrl takeFiveDayForecast =  new HttpUrl.Builder()
@@ -76,7 +90,7 @@ public class OpenWeatherMapProvider {
         printForecastFiveDay(response, cityName);
     }
     private static HashMap takeCoordinates(String cityName) throws IOException {
-        HashMap hm = new HashMap<>();
+        HashMap<String, String> hm = new HashMap<>();
 
         HttpUrl takeCoordinates =  new HttpUrl.Builder()
                 .scheme("http")
@@ -105,18 +119,14 @@ public class OpenWeatherMapProvider {
             throw new IOException("Server returns 0 cities");
         }
 
-        String valueLon = mapper
+        hm.put("lon", mapper
                 .readTree(responseCityCoordinates)
                 .at("/lon")
-                .asText();
-
-        String valueLat = mapper
+                .asText());
+        hm.put("lat", mapper
                 .readTree(responseCityCoordinates)
                 .at("/lat")
-                .asText();
-
-        hm.put(1, valueLon);
-        hm.put(2, valueLat);
+                .asText());
         return hm;
     }
     private static String deleteSymbol(String tmpStr1) {
@@ -150,10 +160,26 @@ public class OpenWeatherMapProvider {
                 .at("/wind/deg")
                 .asText();
         Float windDirectionFloat = Float.valueOf(windDirectionStr);
+        stringBuilder.append(IN_CITY)
+                .append(cityName)
+                .append(IN_NOW_TIME)
+                .append(description)
+                .append(LINE_END_AND_BREAK)
+                .append(WINTER_LINE_BEGIN)
+                .append(windDirection(windDirectionFloat))
+                .append(WIND_SPEED)
+                .append(windSpeed)
+                .append(UNIT_METR_PER_SECOND)
+                .append(GUST)
+                .append(windGust)
+                .append(UNIT_METR_PER_SECOND)
+                .append(LINE_END_AND_BREAK)
+                .append(TEMPERATURE_LINE_BEGIN)
+                .append(temperature)
+                .append(UNIT_CELSIUS)
+                .append(END_POINT_AND_BREAK);
 
-        System.out.println("В городе " + cityName + " на данный момент времени " + description + ";\n"
-                +" - ветер " +windDirection(windDirectionFloat)+ ", скорость ветра: " + windSpeed +" м/с, порывы до " + windGust + " м/с;\n"
-                +" - температура воздуха: " + temperature + " Cº.");
+        System.out.println(stringBuilder);
     }
     private static String windDirection(Float windDirectionFloat) {
         if((windDirectionFloat > -1 && windDirectionFloat < 23)||(windDirectionFloat > 336 && windDirectionFloat < 361)){
@@ -182,11 +208,28 @@ public class OpenWeatherMapProvider {
         for (WeatherResponse.Day element : listForecast) {
             ArrayList<WeatherResponse.Day.Weather> weatherDiscription = element.getWeather();
                     System.out.println("****************");
-                    System.out.println("Дата: " + element.getDt_txt() + "\n "
-                    +"Погода: \n"
-                    +" - " + weatherDiscription.get(0).getDescription() + ";\n"
-                    +" - ветер " + windDirection(element.getWind().getDeg()) + ", скорость ветра: " + element.getWind().getSpeed() +" м/с, порывы до " + element.getWind().getGust() + " м/с;\n"
-                    +" - температура воздуха: " + element.getMain().getTemp() + " Cº.");
+            stringBuilder.append(DATA_LINE_BEGIN)
+                    .append(element.getDt_txt())
+                    .append(LINE_END_AND_BREAK)
+                    .append(LINE_BEGIN)
+                    .append(weatherDiscription.get(0).getDescription())
+                    .append(LINE_END_AND_BREAK)
+                    .append(WINTER_LINE_BEGIN)
+                    .append(windDirection(element.getWind().getDeg()))
+                    .append(WIND_SPEED)
+                    .append(element.getWind().getSpeed())
+                    .append(UNIT_METR_PER_SECOND)
+                    .append(GUST)
+                    .append(element.getWind().getGust())
+                    .append(UNIT_METR_PER_SECOND)
+                    .append(LINE_END_AND_BREAK)
+                    .append(TEMPERATURE_LINE_BEGIN)
+                    .append(element.getMain().getTemp())
+                    .append(UNIT_CELSIUS)
+                    .append(END_POINT_AND_BREAK)
+                    .append("****************\n") ;
+
+                    System.out.println(stringBuilder);
         }
     }
 }
