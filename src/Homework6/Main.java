@@ -11,19 +11,17 @@ public class Main {
     public static void main (String [] args) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
-        String jsonForecastWeather = API_LINK + "/data/2.5/forecast?lat=59.938732&lon=30.316229&units=metric&appid="+API_KEY;;
-
-        RequestBody requstTown = RequestBody.create(jsonForecastWeather, MediaType.parse("application/json"));
+        String jsonForecastWeather5d = API_LINK + "/data/2.5/forecast?lat=59.938732&lon=30.316229&units=metric&appid="+API_KEY;;
+        RequestBody requstForecastWeather5d = RequestBody.create(jsonForecastWeather5d, MediaType.parse("application/json"));
 
         Request request = new Request.Builder()
                 .url(API_LINK)
-                .post(requstTown)
+                .post(requstForecastWeather5d)
                 .build();
 
         Response response = client.newCall(request).execute();
         response.body().string();
 
-        System.out.println(response.code());
 
     }
 
