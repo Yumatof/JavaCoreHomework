@@ -32,7 +32,7 @@ public class OpenWeatherMapProvider {
     private final static String IN_NOW_TIME = " на данный момент времени ";
     private final static String LINE_BEGIN = " - ";
     private final static String LINE_END_AND_BREAK = ";\n";
-    private final static String WINTER_LINE_BEGIN = " - ветер ";
+    private final static String WIND_LINE_BEGIN = " - ветер ";
     private final static String WIND_SPEED = ", скорость ветра: ";
     private final static String UNIT_METR_PER_SECOND = " м/с";
     private final static String GUST = ", порывы до ";
@@ -89,7 +89,7 @@ public class OpenWeatherMapProvider {
         String response = client.newCall(request).execute().body().string();
         printForecastFiveDay(response, cityName);
     }
-    public void getForecast(String date){
+    public static void getForecast(String date){
 
     }
 
@@ -169,7 +169,7 @@ public class OpenWeatherMapProvider {
                 .append(IN_NOW_TIME)
                 .append(description)
                 .append(LINE_END_AND_BREAK)
-                .append(WINTER_LINE_BEGIN)
+                .append(WIND_LINE_BEGIN)
                 .append(windDirection(windDirectionFloat))
                 .append(WIND_SPEED)
                 .append(windSpeed)
@@ -218,7 +218,7 @@ public class OpenWeatherMapProvider {
                     .append(LINE_BEGIN)
                     .append(weatherDiscription.get(0).getDescription())
                     .append(LINE_END_AND_BREAK)
-                    .append(WINTER_LINE_BEGIN)
+                    .append(WIND_LINE_BEGIN)
                     .append(windDirection(element.getWind().getDeg()))
                     .append(WIND_SPEED)
                     .append(element.getWind().getSpeed())

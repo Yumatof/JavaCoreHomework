@@ -1,5 +1,7 @@
 package Homework7;
 
+import Homework7.MyException.InvalidDateException;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -8,7 +10,7 @@ public class UserInterface {
     private Scanner scanner = new Scanner(System.in);
     private final Controller controller = new Controller();
 
-    public void runApplication() throws IOException {
+    public void runApplication() throws IOException, InvalidDateException {
         while(true){
             System.out.print("Введите название города в котором Вам нужно узнать погоду > ");
             String cityName = scanner.nextLine();
