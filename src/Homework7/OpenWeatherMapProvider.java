@@ -39,6 +39,7 @@ public class OpenWeatherMapProvider {
     private final static String TEMPERATURE_LINE_BEGIN =" - температура воздуха: ";
     private final static String UNIT_CELSIUS = " Cº";
     private final static String END_POINT_AND_BREAK = ".\n";
+    private final static String  LINE_SEPARATOR = "****************\n";
 
     public static void currentForecast(String cityName) throws IOException {
         HashMap hm = takeCoordinates(cityName);
@@ -185,6 +186,40 @@ public class OpenWeatherMapProvider {
 
         System.out.println(stringBuilder);
     }
+    private static void printForecastFiveDay(String response, String cityName) throws JsonProcessingException {
+        System.out.println("Производится поиск погоды в городе " + cityName);
+        WeatherResponse weatherResponse = mapper.readValue(response, WeatherResponse.class);
+
+        ArrayList<WeatherResponse.Day> listForecast = weatherResponse.getList();
+        for (WeatherResponse.Day element : listForecast) {
+            ArrayList<WeatherResponse.Day.Weather> weatherDiscription = element.getWeather();
+            System.out.println(LINE_SEPARATOR);
+            stringBuilder.append(LINE_BEGIN)//begin str to DB
+                    .append(weatherDiscription.get(0).getDescription())
+                    .append(LINE_END_AND_BREAK)
+                    .append(WIND_LINE_BEGIN)
+                    .append(windDirection(element.getWind().getDeg()))
+                    .append(WIND_SPEED)
+                    .append(element.getWind().getSpeed())
+                    .append(UNIT_METR_PER_SECOND)
+                    .append(GUST)
+                    .append(element.getWind().getGust())
+                    .append(UNIT_METR_PER_SECOND)
+                    .append(LINE_END_AND_BREAK)
+                    .append(TEMPERATURE_LINE_BEGIN)
+                    .append(element.getMain().getTemp())
+                    .append(UNIT_CELSIUS)
+                    .append(END_POINT_AND_BREAK);// end str to DB
+
+            //вызов записи в DB
+
+            //
+            stringBuilder.insert(0, DATA_LINE_BEGIN + element.getDt_txt() + LINE_END_AND_BREAK);// добавление в начало строки
+            stringBuilder.append(LINE_SEPARATOR);
+            System.out.println(stringBuilder);
+        }
+    }
+
     private static String windDirection(Float windDirectionFloat) {
         if((windDirectionFloat > -1 && windDirectionFloat < 23)||(windDirectionFloat > 336 && windDirectionFloat < 361)){
             return "северный";
@@ -204,36 +239,5 @@ public class OpenWeatherMapProvider {
             return "северо-западный";}
         return null;
     }
-    private static void printForecastFiveDay(String response, String cityName) throws JsonProcessingException {
-        System.out.println("Производится поиск погоды в городе " + cityName);
-        WeatherResponse weatherResponse = mapper.readValue(response, WeatherResponse.class);
 
-        ArrayList<WeatherResponse.Day> listForecast = weatherResponse.getList();
-        for (WeatherResponse.Day element : listForecast) {
-            ArrayList<WeatherResponse.Day.Weather> weatherDiscription = element.getWeather();
-                    System.out.println("****************");
-            stringBuilder.append(DATA_LINE_BEGIN)
-                    .append(element.getDt_txt())
-                    .append(LINE_END_AND_BREAK)
-                    .append(LINE_BEGIN)
-                    .append(weatherDiscription.get(0).getDescription())
-                    .append(LINE_END_AND_BREAK)
-                    .append(WIND_LINE_BEGIN)
-                    .append(windDirection(element.getWind().getDeg()))
-                    .append(WIND_SPEED)
-                    .append(element.getWind().getSpeed())
-                    .append(UNIT_METR_PER_SECOND)
-                    .append(GUST)
-                    .append(element.getWind().getGust())
-                    .append(UNIT_METR_PER_SECOND)
-                    .append(LINE_END_AND_BREAK)
-                    .append(TEMPERATURE_LINE_BEGIN)
-                    .append(element.getMain().getTemp())
-                    .append(UNIT_CELSIUS)
-                    .append(END_POINT_AND_BREAK)
-                    .append("****************\n") ;
-
-                    System.out.println(stringBuilder);
-        }
-    }
 }

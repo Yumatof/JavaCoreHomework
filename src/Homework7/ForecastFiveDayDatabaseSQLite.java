@@ -31,6 +31,19 @@ public class ForecastFiveDayDatabaseSQLite {
     private void performDropTable(Statement statement) throws SQLException {
         statement.executeUpdate("DROP TABLE IF EXISTS ForecastFiveDay");
     }
+
+
+
+
+
+
+
+    public void insertForecast(String city,String date, String forecast){
+
+    }
+    public String selectForecast(String date){
+        return null;
+    }
 }
 
 
