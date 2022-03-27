@@ -89,6 +89,10 @@ public class OpenWeatherMapProvider {
         String response = client.newCall(request).execute().body().string();
         printForecastFiveDay(response, cityName);
     }
+    public void getForecast(String date){
+
+    }
+
     private static HashMap takeCoordinates(String cityName) throws IOException {
         HashMap<String, String> hm = new HashMap<>();
 
