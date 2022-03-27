@@ -21,7 +21,7 @@ public class Controller {
                 System.out.print("Введите дату в формате - \"YYYY-MM-DD HH-00-00\"  >");
                 String inputDate = scan.nextLine();
                 validateInputDate(inputDate);
-                OpenWeatherMapProvider.getForecast(inputDate);
+                OpenWeatherMapProvider.getForecastFromDB(inputDate);
                 break;
             case "0":
                 System.out.println("Завершение работы приложения");

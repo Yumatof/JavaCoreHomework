@@ -26,6 +26,7 @@ public class OpenWeatherMapProvider {
     private static OkHttpClient client = new OkHttpClient();
     private static ObjectMapper mapper = new ObjectMapper();
     private static StringBuilder stringBuilder = new StringBuilder();
+    private static ForecastFiveDayDatabaseSQLite DB = new ForecastFiveDayDatabaseSQLite();
 
     private final static String IN_CITY = "В городе ";
     private final static String DATA_LINE_BEGIN = "Дата: ";
@@ -90,8 +91,8 @@ public class OpenWeatherMapProvider {
         String response = client.newCall(request).execute().body().string();
         printForecastFiveDay(response, cityName);
     }
-    public static void getForecast(String date){
-
+    public static void getForecastFromDB(String date){
+        DB.selectForecast(date);
     }
 
     private static HashMap takeCoordinates(String cityName) throws IOException {
@@ -194,7 +195,7 @@ public class OpenWeatherMapProvider {
         for (WeatherResponse.Day element : listForecast) {
             ArrayList<WeatherResponse.Day.Weather> weatherDiscription = element.getWeather();
             System.out.println(LINE_SEPARATOR);
-            stringBuilder.append(LINE_BEGIN)//begin str to DB
+            stringBuilder.append(LINE_BEGIN)
                     .append(weatherDiscription.get(0).getDescription())
                     .append(LINE_END_AND_BREAK)
                     .append(WIND_LINE_BEGIN)
@@ -209,13 +210,13 @@ public class OpenWeatherMapProvider {
                     .append(TEMPERATURE_LINE_BEGIN)
                     .append(element.getMain().getTemp())
                     .append(UNIT_CELSIUS)
-                    .append(END_POINT_AND_BREAK);// end str to DB
+                    .append(END_POINT_AND_BREAK);
 
-            //вызов записи в DB
+            //DB.insertForecast(cityName,element.getDt_txt(), String.valueOf(stringBuilder));
 
-            //
-            stringBuilder.insert(0, DATA_LINE_BEGIN + element.getDt_txt() + LINE_END_AND_BREAK);// добавление в начало строки
-            stringBuilder.append(LINE_SEPARATOR);
+            stringBuilder.insert(0, DATA_LINE_BEGIN + element.getDt_txt() + LINE_END_AND_BREAK)
+                         .append(LINE_SEPARATOR);
+
             System.out.println(stringBuilder);
         }
     }
