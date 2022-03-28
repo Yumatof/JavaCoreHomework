@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -66,7 +67,7 @@ public class OpenWeatherMapProvider {
         String responseCurrentForecast = client.newCall(requestCurrentForecastCurrent).execute().body().string();
         printCurrentForecast(responseCurrentForecast, cityName);
     }
-    public static void FiveDayForecast(String cityName) throws IOException{
+    public static void FiveDayForecast(String cityName) throws IOException, SQLException {
         HashMap hm = takeCoordinates(cityName);
         String lon = (String) hm.get("lon");
         String lat = (String) hm.get("lat");
@@ -89,6 +90,7 @@ public class OpenWeatherMapProvider {
                 .url(takeFiveDayForecast)
                 .build();
         String response = client.newCall(request).execute().body().string();
+        DB.createTable();
         printForecastFiveDay(response, cityName);
     }
     public static void getForecastFromDB(String date){
@@ -187,7 +189,7 @@ public class OpenWeatherMapProvider {
 
         System.out.println(stringBuilder);
     }
-    private static void printForecastFiveDay(String response, String cityName) throws JsonProcessingException {
+    private static void printForecastFiveDay(String response, String cityName) throws JsonProcessingException, SQLException {
         System.out.println("Производится поиск погоды в городе " + cityName);
         WeatherResponse weatherResponse = mapper.readValue(response, WeatherResponse.class);
 
@@ -212,7 +214,7 @@ public class OpenWeatherMapProvider {
                     .append(UNIT_CELSIUS)
                     .append(END_POINT_AND_BREAK);
 
-            //DB.insertForecast(cityName,element.getDt_txt(), String.valueOf(stringBuilder));
+            DB.insertForecast(cityName,element.getDt_txt(), String.valueOf(stringBuilder));
 
             stringBuilder.insert(0, DATA_LINE_BEGIN + element.getDt_txt() + LINE_END_AND_BREAK)
                          .append(LINE_SEPARATOR);

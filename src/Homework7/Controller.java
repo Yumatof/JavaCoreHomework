@@ -1,15 +1,14 @@
 package Homework7;
 
-import Homework7.MyException.InvalidDateException;
-
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Controller {
-    private OpenWeatherMapProvider openWeatherMapProvider = new OpenWeatherMapProvider();
+
     public Scanner scan = new Scanner(System.in);
 
-    void UserInput(String cityName, String result) throws IOException, InvalidDateException {
+    void UserInput(String cityName, String result) throws IOException, SQLException {
         switch (result){
             case "1":
                 OpenWeatherMapProvider.currentForecast(cityName);
