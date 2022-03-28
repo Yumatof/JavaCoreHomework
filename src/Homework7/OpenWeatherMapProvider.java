@@ -1,7 +1,6 @@
 package Homework7;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -26,7 +25,7 @@ public class OpenWeatherMapProvider {
 
     private static OkHttpClient client = new OkHttpClient();
     private static ObjectMapper mapper = new ObjectMapper();
-    private static StringBuilder stringBuilder = new StringBuilder();
+    private static StringBuilder stringBuilder;
     private static ForecastFiveDayDatabaseSQLite DB = new ForecastFiveDayDatabaseSQLite();
 
     private final static String IN_CITY = "В городе ";
@@ -93,8 +92,8 @@ public class OpenWeatherMapProvider {
         DB.createTable();
         printForecastFiveDay(response, cityName);
     }
-    public static void getForecastFromDB(String date){
-        DB.selectForecast(date);
+    public static void getForecastFromDB(String date) throws SQLException {
+        System.out.println(DB.selectForecast(date));
     }
 
     private static HashMap takeCoordinates(String cityName) throws IOException {
@@ -168,6 +167,7 @@ public class OpenWeatherMapProvider {
                 .at("/wind/deg")
                 .asText();
         Float windDirectionFloat = Float.valueOf(windDirectionStr);
+        stringBuilder = new StringBuilder();
         stringBuilder.append(IN_CITY)
                 .append(cityName)
                 .append(IN_NOW_TIME)
@@ -195,10 +195,10 @@ public class OpenWeatherMapProvider {
 
         ArrayList<WeatherResponse.Day> listForecast = weatherResponse.getList();
         for (WeatherResponse.Day element : listForecast) {
-            ArrayList<WeatherResponse.Day.Weather> weatherDiscription = element.getWeather();
-            System.out.println(LINE_SEPARATOR);
+            ArrayList<WeatherResponse.Day.Weather> weatherDescription = element.getWeather();
+            stringBuilder = new StringBuilder();
             stringBuilder.append(LINE_BEGIN)
-                    .append(weatherDiscription.get(0).getDescription())
+                    .append(weatherDescription.get(0).getDescription())
                     .append(LINE_END_AND_BREAK)
                     .append(WIND_LINE_BEGIN)
                     .append(windDirection(element.getWind().getDeg()))
@@ -213,13 +213,10 @@ public class OpenWeatherMapProvider {
                     .append(element.getMain().getTemp())
                     .append(UNIT_CELSIUS)
                     .append(END_POINT_AND_BREAK);
+            String forecastTextToDB = String.valueOf(stringBuilder);
+            DB.insertForecast(cityName,element.getDt_txt(), forecastTextToDB);
 
-            DB.insertForecast(cityName,element.getDt_txt(), String.valueOf(stringBuilder));
-
-            stringBuilder.insert(0, DATA_LINE_BEGIN + element.getDt_txt() + LINE_END_AND_BREAK)
-                         .append(LINE_SEPARATOR);
-
-            System.out.println(stringBuilder);
+            System.out.println(DATA_LINE_BEGIN + element.getDt_txt() + LINE_END_AND_BREAK +forecastTextToDB + LINE_SEPARATOR);
         }
     }
 
