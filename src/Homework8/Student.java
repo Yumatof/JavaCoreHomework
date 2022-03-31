@@ -7,9 +7,9 @@ public class Student {
     private String fullName;
     List<Course> coureses;
 
-    public Student(String fullName, List<Course> courses){
+    public Student(String fullName, List<Course> coureses){
         this.fullName = fullName;
-        this.coureses =  courses;
+        this.coureses =  coureses;
     }
 
     public String getFullName(){

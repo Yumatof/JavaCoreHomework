@@ -2,6 +2,19 @@ package Homework8;
 
 public class Course {
 
+    public enum NameCourses {
+        FOREIGN_LANGUAGE,
+        HIGHER_MATHEMATICS,
+        DRAWING,
+        HISTORY_OF_THE_MIDDLE_AGES,
+        DANCING,
+        LITERATURE,
+        ELECTRICAL_ENGINEERING,
+        BIOLOGY,
+        NETWORK_TECHNOLOGIES,
+        PROGRAMMING;
+    }
+
     private String nameOfCourse;
 
     public Course(String nameOfCourse){
