@@ -5,11 +5,11 @@ import java.util.List;
 public class Student {
 
     private String fullName;
-    List<Course> coureses;
+    List<Course> courses;
 
-    public Student(String fullName, List<Course> coureses){
+    public Student(String fullName, List<Course> courses){
         this.fullName = fullName;
-        this.coureses =  coureses;
+        this.courses =  courses;
     }
 
     public String getFullName(){
@@ -17,17 +17,17 @@ public class Student {
     }
 
     public List<Course> getCoureses() {
-        return coureses;
+        return courses;
     }
     public boolean equals (Student obj){
         if (obj == null) return false;
         if (obj == this) return true;
-        if (obj.fullName == this.fullName && obj.coureses == this.coureses) return true;
+        if (obj.fullName == this.fullName && obj.courses == this.courses) return true;
         return false;
     }
     public int hashcode(){
         int result = 1;
-        return result + fullName.hashCode() + coureses.hashCode();
+        return result + fullName.hashCode() + courses.hashCode();
     }
 
 }
