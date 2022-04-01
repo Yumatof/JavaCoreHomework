@@ -1,13 +1,13 @@
 package Homework7;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,20 +25,22 @@ public class OpenWeatherMapProvider {
 
     private static OkHttpClient client = new OkHttpClient();
     private static ObjectMapper mapper = new ObjectMapper();
-    private static StringBuilder stringBuilder = new StringBuilder();
+    private static StringBuilder stringBuilder;
+    private static ForecastFiveDayDatabaseSQLite DB = new ForecastFiveDayDatabaseSQLite();
 
     private final static String IN_CITY = "В городе ";
     private final static String DATA_LINE_BEGIN = "Дата: ";
     private final static String IN_NOW_TIME = " на данный момент времени ";
     private final static String LINE_BEGIN = " - ";
     private final static String LINE_END_AND_BREAK = ";\n";
-    private final static String WINTER_LINE_BEGIN = " - ветер ";
+    private final static String WIND_LINE_BEGIN = " - ветер ";
     private final static String WIND_SPEED = ", скорость ветра: ";
     private final static String UNIT_METR_PER_SECOND = " м/с";
     private final static String GUST = ", порывы до ";
     private final static String TEMPERATURE_LINE_BEGIN =" - температура воздуха: ";
     private final static String UNIT_CELSIUS = " Cº";
     private final static String END_POINT_AND_BREAK = ".\n";
+    private final static String  LINE_SEPARATOR = "****************\n";
 
     public static void currentForecast(String cityName) throws IOException {
         HashMap hm = takeCoordinates(cityName);
@@ -64,7 +66,7 @@ public class OpenWeatherMapProvider {
         String responseCurrentForecast = client.newCall(requestCurrentForecastCurrent).execute().body().string();
         printCurrentForecast(responseCurrentForecast, cityName);
     }
-    public static void FiveDayForecast(String cityName) throws IOException{
+    public static void FiveDayForecast(String cityName) throws IOException, SQLException {
         HashMap hm = takeCoordinates(cityName);
         String lon = (String) hm.get("lon");
         String lat = (String) hm.get("lat");
@@ -87,8 +89,13 @@ public class OpenWeatherMapProvider {
                 .url(takeFiveDayForecast)
                 .build();
         String response = client.newCall(request).execute().body().string();
+        DB.createTable();
         printForecastFiveDay(response, cityName);
     }
+    public static void getForecastFromDB(String date) throws SQLException {
+        System.out.println(DB.selectForecast(date));
+    }
+
     private static HashMap takeCoordinates(String cityName) throws IOException {
         HashMap<String, String> hm = new HashMap<>();
 
@@ -160,12 +167,13 @@ public class OpenWeatherMapProvider {
                 .at("/wind/deg")
                 .asText();
         Float windDirectionFloat = Float.valueOf(windDirectionStr);
+        stringBuilder = new StringBuilder();
         stringBuilder.append(IN_CITY)
                 .append(cityName)
                 .append(IN_NOW_TIME)
                 .append(description)
                 .append(LINE_END_AND_BREAK)
-                .append(WINTER_LINE_BEGIN)
+                .append(WIND_LINE_BEGIN)
                 .append(windDirection(windDirectionFloat))
                 .append(WIND_SPEED)
                 .append(windSpeed)
@@ -181,6 +189,37 @@ public class OpenWeatherMapProvider {
 
         System.out.println(stringBuilder);
     }
+    private static void printForecastFiveDay(String response, String cityName) throws JsonProcessingException, SQLException {
+        System.out.println("Производится поиск погоды в городе " + cityName);
+        WeatherResponse weatherResponse = mapper.readValue(response, WeatherResponse.class);
+
+        ArrayList<WeatherResponse.Day> listForecast = weatherResponse.getList();
+        for (WeatherResponse.Day element : listForecast) {
+            ArrayList<WeatherResponse.Day.Weather> weatherDescription = element.getWeather();
+            stringBuilder = new StringBuilder();
+            stringBuilder.append(LINE_BEGIN)
+                    .append(weatherDescription.get(0).getDescription())
+                    .append(LINE_END_AND_BREAK)
+                    .append(WIND_LINE_BEGIN)
+                    .append(windDirection(element.getWind().getDeg()))
+                    .append(WIND_SPEED)
+                    .append(element.getWind().getSpeed())
+                    .append(UNIT_METR_PER_SECOND)
+                    .append(GUST)
+                    .append(element.getWind().getGust())
+                    .append(UNIT_METR_PER_SECOND)
+                    .append(LINE_END_AND_BREAK)
+                    .append(TEMPERATURE_LINE_BEGIN)
+                    .append(element.getMain().getTemp())
+                    .append(UNIT_CELSIUS)
+                    .append(END_POINT_AND_BREAK);
+            String forecastTextToDB = String.valueOf(stringBuilder);
+            DB.insertForecast(cityName,element.getDt_txt(), forecastTextToDB);
+
+            System.out.println(DATA_LINE_BEGIN + element.getDt_txt() + LINE_END_AND_BREAK +forecastTextToDB + LINE_SEPARATOR);
+        }
+    }
+
     private static String windDirection(Float windDirectionFloat) {
         if((windDirectionFloat > -1 && windDirectionFloat < 23)||(windDirectionFloat > 336 && windDirectionFloat < 361)){
             return "северный";
@@ -200,36 +239,5 @@ public class OpenWeatherMapProvider {
             return "северо-западный";}
         return null;
     }
-    private static void printForecastFiveDay(String response, String cityName) throws JsonProcessingException {
-        System.out.println("Производится поиск погоды в городе " + cityName);
-        WeatherResponse weatherResponse = mapper.readValue(response, WeatherResponse.class);
 
-        ArrayList<WeatherResponse.Day> listForecast = weatherResponse.getList();
-        for (WeatherResponse.Day element : listForecast) {
-            ArrayList<WeatherResponse.Day.Weather> weatherDiscription = element.getWeather();
-                    System.out.println("****************");
-            stringBuilder.append(DATA_LINE_BEGIN)
-                    .append(element.getDt_txt())
-                    .append(LINE_END_AND_BREAK)
-                    .append(LINE_BEGIN)
-                    .append(weatherDiscription.get(0).getDescription())
-                    .append(LINE_END_AND_BREAK)
-                    .append(WINTER_LINE_BEGIN)
-                    .append(windDirection(element.getWind().getDeg()))
-                    .append(WIND_SPEED)
-                    .append(element.getWind().getSpeed())
-                    .append(UNIT_METR_PER_SECOND)
-                    .append(GUST)
-                    .append(element.getWind().getGust())
-                    .append(UNIT_METR_PER_SECOND)
-                    .append(LINE_END_AND_BREAK)
-                    .append(TEMPERATURE_LINE_BEGIN)
-                    .append(element.getMain().getTemp())
-                    .append(UNIT_CELSIUS)
-                    .append(END_POINT_AND_BREAK)
-                    .append("****************\n") ;
-
-                    System.out.println(stringBuilder);
-        }
-    }
 }
