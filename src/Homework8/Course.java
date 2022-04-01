@@ -12,7 +12,14 @@ public class Course {
         ELECTRICAL_ENGINEERING,
         BIOLOGY,
         NETWORK_TECHNOLOGIES,
-        PROGRAMMING;
+        PROGRAMMING,
+        GEOMETRY,
+        HISTORY,
+        GEOGRAPHY,
+        PHYSICS,
+        CHEMISTRY,
+        ECOLOGY,
+        THEORY_OF_GOVERNMENT_AND_RIGHTS
     }
 
     private String nameOfCourse;
